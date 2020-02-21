@@ -1,0 +1,2 @@
+# FUNGUJUZDPCDIKYMOC
+NERVY JAK KKT :)))))))))))))))
