@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import Token from '../Token';
 import {Router} from '@angular/router';
+import {UserService} from '../services/user.service';
+import {Authentication} from '../models/Authentication.model';
+import {User} from '../models/User.model';
+import {AuthenticationService} from '../services/authentication.service';
 
 @Component({
   selector: 'app-userinfo',
@@ -15,18 +19,15 @@ export class UserinfoComponent implements OnInit {
   private email = '';
   private username = '';
 
-  constructor(private http: HttpClient, private router: Router, private http2: HttpClient) {
-    const headers = new HttpHeaders()
-      .set('User-Token', Token.access);
+  constructor(private http: HttpClient, private router: Router, private http2: HttpClient, private user: UserService, private auth: AuthenticationService, private userlogout: AuthenticationService) {
+    console.log(AuthenticationService.token);
 
-    this.http
-      .get(this.url, {headers})
+    this.user.getUser()
       .subscribe(
-      (data: any) => {
+      (data: User) => {
         this.id = data.id;
         this.email = data.email
         this.username = data.username;
-
 
         console.log(this.id);
         console.log(this.email);
@@ -38,17 +39,12 @@ export class UserinfoComponent implements OnInit {
   }
 
   logoutClick() {
-    const headers = new HttpHeaders()
-      .set('User-Token', Token.access);
-
-    this.http2
-      .delete(this.urllogout, {headers})
+    this.userlogout.getLogout()
       .subscribe(
-        (data: any) => {
-          Token.access = '';
-          console.log(Token.access);
-
-         }, (error) => {
+        (data: User) => {
+          AuthenticationService.token.access_token = '';
+          console.log(AuthenticationService.token.access_token);
+          }, (error) => {
 
         }
       );

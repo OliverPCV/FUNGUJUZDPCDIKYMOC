@@ -2,41 +2,42 @@ import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import Token from '../Token';
 import {Router} from '@angular/router';
+import {AuthenticationService} from '../services/authentication.service';
+import {Authentication} from '../models/Authentication.model';
+
 
 
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
+  providers: [AuthenticationService]
 })
 export class LoginComponent implements OnInit {
 
-  private url = 'http://85.160.64.233:3000/session/login';
-  private email = '';
-  private password = '';
   private color: string;
   private wrong = false;
+  private email = '';
+  private password = '';
 
+  constructor(private http: HttpClient, private router: Router, private authentication: AuthenticationService) {
+
+  }
 
   loginClick() {
-    this.http
-      .post(this.url, {email: this.email, password: this.password})
-      .subscribe(
-      (data: any) => {
-        Token.access = data.access_token;
-        console.log(Token.access);
+    this.authentication.getLogin(this.email, this.password).subscribe(
+      (data: Authentication) => {
 
-        this.router.navigate(['/loggedin']);
+          this.authentication.setToken(data);
+          console.log(data);
+          this.router.navigate(['/loggedin']);
+      }, (error) => {
 
-        }, (error) => {
-          this.color = 'red';
-          this.wrong = true;
       }
     );
   }
 
-  constructor(private http: HttpClient, private router: Router) { }
 
   ngOnInit() {
   }

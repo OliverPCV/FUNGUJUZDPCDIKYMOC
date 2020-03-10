@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import Token from '../Token';
+import {UserService} from '../services/user.service';
+import {AuthenticationService} from '../services/authentication.service';
 
 @Component({
   selector: 'app-loggedin',
@@ -9,20 +11,14 @@ import Token from '../Token';
 })
 export class LoggedinComponent implements OnInit {
 
-
-
   private urllogout = 'http://85.160.64.233:3000/session/logout';
 
+  constructor(private http: HttpClient, private userlogout: AuthenticationService) {
+
+  }
 
   logoutClick() {
-
-    const headers = new HttpHeaders()
-      .set('User-Token', Token.access);
-
-    console.log(headers);
-
-    this.http
-      .delete(this.urllogout, {headers})
+    this.userlogout.getLogout()
       .subscribe(
         (data: any) => {
 
@@ -35,9 +31,7 @@ export class LoggedinComponent implements OnInit {
         }
       );
   }
-  constructor(private http: HttpClient) {
 
-  }
 
   ngOnInit() {
   }

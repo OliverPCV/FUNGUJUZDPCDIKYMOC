@@ -2,6 +2,8 @@ import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
 import Token from '../Token';
+import {AuthenticationService} from '../services/authentication.service';
+import {Authentication} from '../models/Authentication.model';
 
 @Component({
   selector: 'app-register',
@@ -19,27 +21,28 @@ export class RegisterComponent implements OnInit {
   private color: string;
   private wrong = false;
 
+  constructor(private http: HttpClient, private router: Router, private authentication: AuthenticationService) {
+
+  }
+
   registerClick() {
     if (this.password === this.passwordcontrol) {
-    this.http
-      .post(this.url, {username: this.username, email: this.email, password: this.password, passwordcontrol: this.passwordcontrol})
-      .subscribe(
-        (data: any) => {
-          this.router.navigate(['/home']);
+      this.authentication.getRegistration(this.username, this.email, this.password, this.passwordcontrol)
+        .subscribe(
+          (data: Authentication) => {
+            this.router.navigate(['/home']);
 
-        }, (error) => {
-          this.wrong = true;
-          this.color = 'red';
-        }
-      );
+          }, (error) => {
+            this.wrong = true;
+            this.color = 'red';
+          }
+        );
     } else {
       this.wrong = true;
       this.color = 'red';
     }
   }
-  constructor(private http: HttpClient, private router: Router) {
 
-  }
 
   ngOnInit() {
   }
