@@ -22,9 +22,8 @@ export class LoggedinComponent implements OnInit {
       .subscribe(
         (data: any) => {
 
-          Token.access = '';
+          AuthenticationService.token.access_token = '';
 
-          console.log(Token.access);
 
         }, (error) => {
 
